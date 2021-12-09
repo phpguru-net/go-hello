@@ -3,6 +3,7 @@
 ## Resources
 
 - [Go Packages](https://pkg.go.dev)
+- [Go Examples](https://dlintw.github.io/gobyexample/public/memory-and-sizeof.html)
 
 ## Essentials
 
