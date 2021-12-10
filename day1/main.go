@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"unsafe"
 )
 
@@ -149,4 +150,60 @@ func main() {
 	taskA.print()
 	(*taskACopy).print()
 	taskB.print()
+
+	// scanln
+	// fmt.Println("We have a config like this")
+	// fmt.Println("--env=production --app=App Name")
+	// let's start with scanln
+	// var env string
+	// var appName string
+	// fmt.Scanln(&env)
+	// fmt.Scanln(&appName)
+
+	// fmt.Fprintf(os.Stdout, "ENV: %s\n", env)
+	// fmt.Fprintf(os.Stdout, "APP_NAME: %s\n", appName)
+
+	// what we can do with scanf
+	// fmt.Scanf("--env=%s --app=%s", &env, &appName)
+	// fmt.Printf("%s, %s\n", env, appName)
+
+	var salary float64 = 35.5
+	var expense float64 = 20.4
+	var monthlyIncome float64 = salary - expense
+	var month int = 12
+	var yearlyIncome float64 = monthlyIncome * float64(month)
+	// can not convert float to string with this syntax
+	// fmt.Println("The yearly Income is %s", string(yearlyIncome))
+	var userIncome = "A year has " + strconv.Itoa(month) + " months.\n"
+	userIncome += "So your yearly income is " + fmt.Sprintf("%0.2f", yearlyIncome) + " M đồng"
+	fmt.Println(userIncome)
+
+	// array
+	/// array static size
+	var numbers [3]int
+	numbers[0] = 1
+	numbers[0] = 2
+	numbers[1] = 3
+	// the following line will be thrown an error, because array size is 3
+	// numbers[3] = 3
+	// print
+	fmt.Printf("Array size is %v\n", len(numbers))
+	fmt.Printf("Element at index %v = %v\n", 0, numbers[0])
+	fmt.Printf("Element at index %v = %v\n", 1, numbers[1])
+	fmt.Printf("Element at index %v = %v\n", 2, numbers[2])
+	// the following line will be thrown an error, because array size is 3
+	// fmt.Printf("Element at index %v = %v\n", 3, numbers[3])
+
+	// slice
+	var badWords []string = []string{"a", "aa", "aaa", "aaaa", "aaaaa"}
+	fmt.Printf("Badwords at index %v = %v\n", 0, badWords[0])
+	subBadwords := badWords[2:3]
+	fmt.Println(subBadwords[0])
+
+	/// array dynamic size
+
+	// how to get a rune/character in a string?
+	var exampleString = "Golang là một ngôn ngữ hướng mục đích"
+	fmt.Println(exampleString[0])
+
 }
