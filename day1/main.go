@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -203,7 +204,30 @@ func main() {
 	/// array dynamic size
 
 	// how to get a rune/character in a string?
-	var exampleString = "Golang là một ngôn ngữ hướng mục đích"
+	var exampleString = "😀😁😁Golang là một ngôn ngữ hướng mục đích"
 	fmt.Println(exampleString[0])
+	// convert string to runes
+	var exampleStringChars []rune = []rune(exampleString)
+	fmt.Printf("%v\n", string(exampleStringChars[0:1]))
+	fmt.Printf("%c\n", exampleStringChars[0])
+	fmt.Printf("%s\n", string(exampleStringChars[len(exampleStringChars)-3]))
+	fmt.Printf("%v\n", len(exampleStringChars))
 
+	// runes
+	const nihongo = "😀😁😁日本語"
+	for index, runeValue := range nihongo {
+		fmt.Printf("%#U starts at byte position %d\n", runeValue, index)
+	}
+
+	const xinchaoban = "😀😁😁Xin chào bạn"
+	for index, runeValue := range xinchaoban {
+		fmt.Printf("%#U starts at byte position %d\n", runeValue, index)
+	}
+
+	for i, w := 0, 0; i < len(xinchaoban); i += w {
+
+		runeValue, width := utf8.DecodeRuneInString(xinchaoban[i:])
+		fmt.Printf("%#U starts at byte position %d\n", runeValue, i)
+		w = width
+	}
 }
