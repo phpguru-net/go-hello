@@ -12,7 +12,7 @@ func NeedsLicense(kind string) bool {
 // ChooseVehicle recommends a vehicle for selection. It always recommends the vehicle that comes first in dictionary order.
 func ChooseVehicle(option1, option2 string) string {
 	// compare two string
-	if(option1 < option2) {
+	if option1 < option2 {
 		return option1 + " is clearly the better choice."
 	}
 	return option2 + " is clearly the better choice"
@@ -20,15 +20,14 @@ func ChooseVehicle(option1, option2 string) string {
 
 // CalculateResellPrice calculates how much a vehicle can resell for at a certain age.
 func CalculateResellPrice(originalPrice, age float64) float64 {
-	if(age < 3) {
+	if age < 3 {
 		return originalPrice * 0.8
 	}
-	if(age >= 10) {
+	if age >= 10 {
 		return originalPrice * 0.5
 	}
 	return originalPrice * 0.7
 }
-
 
 // Welcome greets a person by name.
 func Welcome(name string) string {
@@ -48,15 +47,70 @@ func AssignTable(name string, table int, neighbor, direction string, distance fl
 	return output
 }
 
+// GetItem retrieves an item from a slice at given position. The second return value indicates whether
+// the given index exists in the slice or not.
+func GetItem(slice []int, index int) (int, bool) {
+	if index < 0 {
+		return 0, false
+	}
+	if index >= len(slice) {
+		return 0, false
+	}
+	// otherwise
+	return slice[index], true
+}
 
-func main(){
+// SetItem writes an item to a slice at given position overwriting an existing value.
+// If the index is out of range the value needs to be appended.
+func SetItem(slice []int, index, value int) []int {
+	if index < 0 || index >= len(slice) {
+		slice = append(slice, value)
+		return slice
+	}
+	slice[index] = value
+	return slice
+}
+
+// PrefilledSlice creates a slice of given length and prefills it with the given value.
+func PrefilledSlice(value, length int) []int {
+	var slices []int = []int{}
+	if length > 0 {
+		for i := 0; i < length; i++ {
+			slices = append(slices, value)
+		}
+	}
+	return slices
+}
+
+// RemoveItem removes an item from a slice by modifying the existing slice.
+func RemoveItem(slice []int, index int) []int {
+	if index < 0 || index >= len(slice) {
+		return slice
+	}
+	return append(slice[:index], slice[index+1:]...)
+}
+
+func main() {
 	fmt.Printf("%v need NeedsLicense? %v\n", "car", NeedsLicense("car"))
-	fmt.Printf("%v vs %v ? %v\n", "Bugatti Veyron", "Ford Pinto", ChooseVehicle("Bugatti Veyron","Ford Pinto"))
+	fmt.Printf("%v vs %v ? %v\n", "Bugatti Veyron", "Ford Pinto", ChooseVehicle("Bugatti Veyron", "Ford Pinto"))
 	originalPrice := float64(1000)
 	fmt.Printf("originalPrice = %v\n", originalPrice)
-	fmt.Printf("%v years car's price is %1.2f\n", 2, CalculateResellPrice(originalPrice,2))
-	fmt.Printf("%v years car's price is %1.2f\n", 5, CalculateResellPrice(originalPrice,5))
-	fmt.Printf("%v years car's price is %1.2f\n", 11, CalculateResellPrice(originalPrice,11))
+	fmt.Printf("%v years car's price is %1.2f\n", 2, CalculateResellPrice(originalPrice, 2))
+	fmt.Printf("%v years car's price is %1.2f\n", 5, CalculateResellPrice(originalPrice, 5))
+	fmt.Printf("%v years car's price is %1.2f\n", 11, CalculateResellPrice(originalPrice, 11))
 
 	fmt.Println(AssignTable("Christiane", 27, "Frank", "on the left", 23.7834298))
+
+	var slice []int = []int{1, 2, 3, 4, 5}
+	fmt.Println(slice)
+	fmt.Println(GetItem(slice, 2))
+	fmt.Println(GetItem(slice, 100))
+	fmt.Println(GetItem(slice, -100))
+	SetItem(slice, 2, 100)
+	fmt.Println(slice)
+	var newSlice []int
+	newSlice = PrefilledSlice(1, 99)
+	fmt.Println(newSlice)
+	slice = RemoveItem(slice, 3)
+	fmt.Println(slice)
 }
