@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"go-hello.phpguru.net/test/speed"
+	"go-hello.phpguru.net/test/lasagna"
 )
 
 // NeedsLicense determines whether a license is needed to drive a type of vehicle. Only "car" and "truck" require a license.
@@ -184,13 +184,23 @@ func main() {
 	fmt.Printf("%s = %v\n", "ace", ParseCard("ace"))
 	fmt.Printf("%s = %v\n", "jack", ParseCard("jack"))
 
-	carSpeed := 5
-	batteryDrain := 2
-	car := speed.NewCar(carSpeed, batteryDrain)
-	distance := 100
-	fmt.Println(car)
-	raceTrack := speed.NewTrack(distance)
-	fmt.Println(raceTrack)
-	speed.Drive(car)
-	fmt.Println(car)
+	// carSpeed := 5
+	// batteryDrain := 2
+	// car := speed.NewCar(carSpeed, batteryDrain)
+	// distance := 100
+	// fmt.Println(car)
+	// raceTrack := speed.NewTrack(distance)
+	// fmt.Println(raceTrack)
+	// speed.Drive(car)
+	// fmt.Println(car)
+	friendsList := []string{"noodles", "sauce", "mozzarella", "kampot pepper"}
+	myList := []string{"noodles", "meat", "sauce", "mozzarella"}
+
+	mixedList := lasagna.AddSecretIncredient(friendsList, myList)
+	fmt.Println(myList)
+	fmt.Println(friendsList)
+	fmt.Println(mixedList)
+	quantities := []float64{1.2, 3.6, 10.5}
+	scaledQuantities := lasagna.ScaleRecipe(quantities, 4)
+	fmt.Println(scaledQuantities)
 }
