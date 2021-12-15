@@ -1,3 +1,3 @@
-module github.com/phpguru-net/go-hello/test
+module go-hello.phpguru.net/test
 
 go 1.17

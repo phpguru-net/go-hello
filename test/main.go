@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"go-hello.phpguru.net/test/speed"
 )
 
 // NeedsLicense determines whether a license is needed to drive a type of vehicle. Only "car" and "truck" require a license.
@@ -181,4 +183,14 @@ func main() {
 	fmt.Printf("%s = %v\n", "queen", ParseCard("queen"))
 	fmt.Printf("%s = %v\n", "ace", ParseCard("ace"))
 	fmt.Printf("%s = %v\n", "jack", ParseCard("jack"))
+
+	carSpeed := 5
+	batteryDrain := 2
+	car := speed.NewCar(carSpeed, batteryDrain)
+	distance := 100
+	fmt.Println(car)
+	raceTrack := speed.NewTrack(distance)
+	fmt.Println(raceTrack)
+	speed.Drive(car)
+	fmt.Println(car)
 }
