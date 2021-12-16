@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"go-hello.phpguru.net/test/lasagna"
+	"go-hello.phpguru.net/test/timer"
 )
 
 // NeedsLicense determines whether a license is needed to drive a type of vehicle. Only "car" and "truck" require a license.
@@ -203,4 +204,13 @@ func main() {
 	quantities := []float64{1.2, 3.6, 10.5}
 	scaledQuantities := lasagna.ScaleRecipe(quantities, 4)
 	fmt.Println(scaledQuantities)
+
+	fmt.Println(timer.Schedule("7/25/2019 13:45:00"))
+	fmt.Println(timer.Description("7/25/2019 13:45:00"))
+	fmt.Printf("July 25, 2019 13:45:00 is passed? %v\n", timer.HasPassed("July 25, 2019 13:45:00"))
+	fmt.Printf("December 9, 2112 11:59:59 is passed? %v\n", timer.HasPassed("December 9, 2112 11:59:59"))
+	fmt.Printf("Thursday, July 25, 2019 13:45:00? %v\n", timer.IsAfternoonAppointment("Thursday, July 25, 2019 13:45:00"))
+	fmt.Println(timer.AnniversaryDate())
+	fmt.Println(timer.UTCToLocal("16/12/2021 03:38:00"))
+	timer.DayLightSaving()
 }
