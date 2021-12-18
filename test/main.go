@@ -157,6 +157,37 @@ func SmallHand(handScore, dealerScore int) string {
 	return "S"
 }
 
+// TotalBirdCount return the total bird count by summing
+// the individual day's counts.
+func TotalBirdCount(birdsPerDay []int) int {
+	var sum int = 0
+	for i := 0; i < len(birdsPerDay); i++ {
+		sum += birdsPerDay[i]
+	}
+	return sum
+}
+
+// BirdsInWeek returns the total bird count by summing
+// only the items belonging to the given week.
+func BirdsInWeek(birdsPerDay []int, week int) int {
+	// 1 week = 7 days
+	sum := 0
+	start := 7 * (week - 1)
+	for i := start; i < start+7 && i < len(birdsPerDay); i++ {
+		sum += birdsPerDay[i]
+	}
+	return sum
+}
+
+// FixBirdCountLog returns the bird counts after correcting
+// the bird counts for alternate days.
+func FixBirdCountLog(birdsPerDay []int) []int {
+	for i := 0; i < len(birdsPerDay); i += 2 {
+		birdsPerDay[i] += 1
+	}
+	return birdsPerDay
+}
+
 func main() {
 	fmt.Printf("%v need NeedsLicense? %v\n", "car", NeedsLicense("car"))
 	fmt.Printf("%v vs %v ? %v\n", "Bugatti Veyron", "Ford Pinto", ChooseVehicle("Bugatti Veyron", "Ford Pinto"))
@@ -180,6 +211,9 @@ func main() {
 	fmt.Println(newSlice)
 	slice = RemoveItem(slice, 3)
 	fmt.Println(slice)
+	for i := 0; i < count; i++ {
+
+	}
 
 	fmt.Printf("%s = %v\n", "queen", ParseCard("queen"))
 	fmt.Printf("%s = %v\n", "ace", ParseCard("ace"))
