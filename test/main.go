@@ -211,9 +211,6 @@ func main() {
 	fmt.Println(newSlice)
 	slice = RemoveItem(slice, 3)
 	fmt.Println(slice)
-	for i := 0; i < count; i++ {
-
-	}
 
 	fmt.Printf("%s = %v\n", "queen", ParseCard("queen"))
 	fmt.Printf("%s = %v\n", "ace", ParseCard("ace"))
@@ -247,4 +244,113 @@ func main() {
 	fmt.Println(timer.AnniversaryDate())
 	fmt.Println(timer.UTCToLocal("16/12/2021 03:38:00"))
 	timer.DayLightSaving()
+
+	// range iterator
+	// slice
+	var numberSlices []int = []int{1, 1, 2, 3, 5, 7}
+	for idx, number := range numberSlices {
+		fmt.Printf("%d. %d\n", idx+1, number)
+	}
+	// map
+	var countryCodes map[string]string = map[string]string{
+		`vn`: "Vietnam",
+		`gb`: "Great Britain",
+		"us": "United States",
+	}
+	for ckey, cvalue := range countryCodes {
+		fmt.Printf("%s - %s\n", ckey, cvalue)
+	}
+	// omit key/value/key+value
+	for _, number := range numberSlices {
+		fmt.Printf("%03d\n", number)
+	}
+	for c, _ := range countryCodes {
+		fmt.Println(c)
+	}
+	count := 0
+	for range countryCodes {
+		count++
+	}
+	fmt.Println()
+
+	var alphaCharStart = 'A'
+	var alphaCharEnd = 'H'
+	for alphaChar := alphaCharStart; alphaChar <= alphaCharEnd; alphaChar++ {
+		fmt.Printf("%s\n", string(alphaChar))
+	}
+
+	var initialVotes int
+	initialVotes = 2
+
+	var counter *int
+	fmt.Println(VoteCount(counter))
+	counter = NewVoteCounter(initialVotes)
+	fmt.Println(*counter == initialVotes) // true
+	fmt.Println(VoteCount(counter))
+	IncrementVoteCount(counter, 1)
+	fmt.Println(VoteCount(counter))
+	IncrementVoteCount(counter, 2)
+	fmt.Println(VoteCount(counter))
+	IncrementVoteCount(counter, 3)
+	fmt.Println(VoteCount(counter))
+	var electionResult *ElectionResult = NewElectionResult("John", 5)
+	fmt.Println(DisplayResult(electionResult))
+	var finalResults = map[string]int{
+		"Mary": 10,
+		"John": 51,
+	}
+
+	DecrementVotesOfCandidate(finalResults, "Mary")
+	fmt.Println(finalResults)
+}
+
+func VoteCount(counter *int) int {
+	if counter == nil {
+		return 0
+	}
+	return *counter
+}
+
+func NewVoteCounter(initialVotes int) *int {
+	return &initialVotes
+}
+
+// IncrementVoteCount increments the value in a vote counter
+func IncrementVoteCount(counter *int, increment int) {
+	if counter == nil {
+		*counter = 0
+		return
+	}
+	*counter += increment
+}
+
+type ElectionResult struct {
+	// Candidate's name
+	Name string
+	// Number of votes the candidate has
+	Votes int
+}
+
+// NewElectionResult creates a new election result
+func NewElectionResult(candidateName string, votes int) *ElectionResult {
+	var electionResult *ElectionResult = &ElectionResult{
+		Name:  candidateName,
+		Votes: votes,
+	}
+	return electionResult
+}
+
+// DisplayResult creates a message with the result to be displayed
+func DisplayResult(result *ElectionResult) string {
+	return fmt.Sprintf("%s (%d)", result.Name, result.Votes)
+}
+
+// DecrementVotesOfCandidate decrements by one the vote count of a candidate in a map
+func DecrementVotesOfCandidate(results map[string]int, candidate string) {
+	for c, _ := range results {
+		if c == candidate {
+			results[c] -= 1
+			break
+		}
+	}
 }
