@@ -1,7 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
+	"strconv"
+	"unicode/utf8"
 
 	"go-hello.phpguru.net/test/lasagna"
 	"go-hello.phpguru.net/test/timer"
@@ -302,6 +306,269 @@ func main() {
 
 	DecrementVotesOfCandidate(finalResults, "Mary")
 	fmt.Println(finalResults)
+	speed := 5
+	batteryDrain := 2
+	car := NewCar(speed, batteryDrain)
+	fmt.Printf("car is now %v\n", car)
+	car.DisplayDistance()
+	car.Drive()
+	car.DisplayBattery()
+	fmt.Printf("car is now %v\n", car)
+	car.DisplayDistance()
+	trackDistance := 100
+	fmt.Println(car.CanFinish(trackDistance))
+
+	// Strings & Runes
+	var myString string = "❗ABCDEF"
+	for idx, char := range myString {
+		fmt.Printf("%d. %c - %U - %d\n", idx+1, char, char, char)
+	}
+
+	// len vs rune
+	stringLength := len(myString)
+	numberOfRunes := utf8.RuneCountInString(myString)
+	fmt.Printf("myString - Length: %d - Runes: %d\n", stringLength, numberOfRunes)
+
+	// var applicationChars []ApplicationCharacter = []ApplicationCharacter{
+	// 	{Application: "recommendation", Character: `❗`, UnicodeCodePoint: "U+2757"},
+	// 	{Application: "search", Character: `🔍`, UnicodeCodePoint: "U+1F50D"},
+	// 	{Application: "weather", Character: `☀`, UnicodeCodePoint: "U+2600"},
+	// }
+	fmt.Println(Application("❗ recommended search product 🔍"))
+	log := "please replace '👎' with '👍'"
+
+	fmt.Println(Replace(log, '👎', '👍'))
+
+	// string conv
+
+	fmt.Println(DescribeNumberBox(4.1))
+	fmt.Println(DescribeNumberBox(4))
+	fmt.Println(DescribeNumberBox(testNumberBox{4}))
+	// fmt.Println(testNumberBox{4})
+	// fmt.Println(testNumberBox{4}.Number())
+	// var exampleObj NumberBox = testNumberBox{4}
+	// if correctobj, ok := exampleObj.(interface{Number() string}); ok {
+	//   value := correctobj.Number()
+	// }
+	//fmt.Printf("%s", reflect.ValueOf(exampleObj).MethodByName("Number"))
+	fmt.Println(DescribeAnything(testNumberBox{4}))
+}
+
+type NumberBox interface {
+}
+
+type testNumberBox struct {
+	number NumberBox
+}
+
+func (nb testNumberBox) Number() string {
+	return fmt.Sprintf("%v", nb.number)
+}
+
+func DescribeNumber(f float64) string {
+	return fmt.Sprintf("This is the number %1.1f", f)
+}
+
+// DescribeNumberBox should return a string describing the NumberBox.
+func DescribeNumberBox(nb NumberBox) string {
+	strFloat64, isFloat64 := nb.(float64)
+	if isFloat64 {
+		return fmt.Sprintf("This is a box containing the number %1.1f", strFloat64)
+	}
+	strInt, isInt := nb.(int)
+	if isInt {
+		return fmt.Sprintf("This is a box containing the number %1.1f", float64(strInt))
+	}
+	if correctobj, ok := nb.(interface{Number() string}); ok { 
+	  value := correctobj.Number()	  
+	  return value
+	}
+	_, isString := nb.(string)
+    if isString {
+        return "Return to sender"
+    }
+	num, err := strconv.Atoi(fmt.Sprintf("%v", reflect.ValueOf(nb).MethodByName("Number").Call([]reflect.Value{})[0]))
+    if err == nil {
+        return DescribeNumberBox(num)
+    }
+	return "Return to sender"
+}
+
+type FancyNumber struct {
+	n string
+}
+
+func (i FancyNumber) Value() string {
+	return i.n
+}
+
+type FancyNumberBox interface {
+	Value() string
+}
+
+// ExtractFancyNumber should return the integer value for a FancyNumber
+// and 0 if any other FancyNumberBox is supplied.
+func ExtractFancyNumber(fnb FancyNumberBox) int {
+	fancyNumber, isFancyNumber := fnb.(FancyNumber)
+    if isFancyNumber {
+        num, err := strconv.Atoi(fancyNumber.Value())
+        if err == nil {
+            return num
+        }
+    }
+	return 0
+}
+
+// DescribeFancyNumberBox should return a string describing the FancyNumberBox.
+func DescribeFancyNumberBox(fnb FancyNumberBox) string {
+	num := ExtractFancyNumber(fnb)
+    if num > 0 {
+        return fmt.Sprintf("This is a fancy box containing the number %1.1f", float64(num))
+    }
+	return fmt.Sprint("This is a fancy box containing the number 0.0")
+}
+
+// DescribeAnything should return a string describing whatever it contains.
+func DescribeAnything(i interface{}) string {
+	switch v:= i.(type){
+        case int:
+    		return DescribeNumber(float64(v))
+        case float64:
+        	return DescribeNumber(v)
+        case FancyNumberBox:
+    		return DescribeFancyNumberBox(v)        
+    	case NumberBox:
+    		return DescribeNumberBox(v)
+    	default:
+    		return "Return to sender"
+    }
+}
+
+// This file contains types used in the exercise but should not be modified.
+type SillyNephewError struct {
+	cows int
+}
+
+func (e *SillyNephewError) Error() string {
+	return fmt.Sprintf("silly nephew, there cannot be %v cows", e.cows)
+}
+
+// DivideFood computes the fodder amount per cow for the given cows.
+func DivideFood(weightFodder WeightFodder, cows int) (float64, error) {
+	fodderAmount, err := weightFodder.FodderAmount()
+	if cows == 0 {
+		return 0.0, errors.New("Division by zero")
+	}
+	if cows < 0 {
+		return 0.0, &SillyNephewError{cows: cows}
+	}
+	if err == ErrScaleMalfunction && fodderAmount > 0 {
+		if cows > 0 {
+			return float64(fodderAmount) * 2 / float64(cows), nil
+		}
+
+	}
+	if fodderAmount < 0 {
+		return 0.0, errors.New("Negative fodder")
+	}
+	if err != nil {
+		return 0.0, err
+	}
+	return float64(fodderAmount) / float64(cows), nil
+}
+
+// WeightFodder returns the amount of available fodder.
+type WeightFodder interface {
+	FodderAmount() (float64, error)
+}
+
+// ErrScaleMalfunction indicates an error with the scale.
+var ErrScaleMalfunction = errors.New("sensor error")
+
+type ApplicationCharacter struct {
+	Application      string
+	Character        rune
+	UnicodeCodePoint string
+}
+
+func findApplication(applicationChars []ApplicationCharacter, char rune) (string, bool) {
+
+	for _, appChar := range applicationChars {
+
+		if appChar.Character == char {
+			return appChar.Application, true
+		}
+	}
+	return "", false
+}
+
+func Application(line string) string {
+	var applicationChars []ApplicationCharacter = []ApplicationCharacter{
+		{Application: "recommendation", Character: '❗', UnicodeCodePoint: "U+2757"},
+		{Application: "search", Character: '🔍', UnicodeCodePoint: "U+1F50D"},
+		{Application: "weather", Character: '☀', UnicodeCodePoint: "U+2600"},
+	}
+	for _, char := range line {
+		if application, ok := findApplication(applicationChars, char); ok {
+			return application
+		}
+	}
+	return "default"
+}
+
+func Replace(log string, oldRune, newRune rune) string {
+	var newLog []rune = []rune{}
+	// var lastIndex int = 0
+	var runes []rune = []rune(log)
+	for _, char := range runes {
+		if char == oldRune {
+			newLog = append(newLog, newRune)
+		} else {
+			newLog = append(newLog, char)
+		}
+	}
+	return string(newLog)
+}
+
+func WithinLimit(log string, limit int) bool {
+	return utf8.RuneCountInString(log) <= limit
+}
+
+type Car struct {
+	speed        int
+	batteryDrain int
+	battery      int
+	distance     int
+}
+
+func NewCar(speed, batteryDrain int) Car {
+	return Car{
+		speed:        speed,
+		batteryDrain: batteryDrain,
+		battery:      100,
+	}
+}
+
+func (car *Car) Drive() {
+	if car.battery-car.batteryDrain >= 0 {
+		car.battery -= car.batteryDrain
+		car.distance += car.speed
+	}
+}
+
+func (car Car) DisplayDistance() string {
+	return fmt.Sprintf("Driven %v meters", car.distance)
+}
+
+func (car Car) DisplayBattery() string {
+	return fmt.Sprintf("Battery at %v", int(float64(car.battery)/100*100)) + "%"
+}
+
+func (car Car) CanFinish(trackDistance int) bool {
+	// speed - batteryDrain
+	// maximumDistance - battery
+	maxiumDistance := float64(car.battery) * float64(car.speed) / float64(car.batteryDrain)
+	return maxiumDistance >= float64(trackDistance)
 }
 
 func VoteCount(counter *int) int {
@@ -353,4 +620,57 @@ func DecrementVotesOfCandidate(results map[string]int, candidate string) {
 			break
 		}
 	}
+}
+
+// ZERO VALUES
+
+// Resident represents a resident in this city.
+type Resident struct {
+	Name    string
+	Age     int
+	Address map[string]string
+}
+
+// NewResident registers a new resident in this city.
+func NewResident(name string, age int, address map[string]string) *Resident {
+	return &Resident{
+		Name:    name,
+		Age:     age,
+		Address: address,
+	}
+}
+
+// HasRequiredInfo determines if a given resident has all of the required information.
+func (r *Resident) HasRequiredInfo() bool {
+	if r.Name == "" {
+		return false
+	}
+	if r.Address == nil || len(r.Address) == 0 {
+		return false
+	}
+
+	for _, value := range r.Address {
+		if value == "" {
+			return false
+		}
+	}
+	return true
+}
+
+// Delete deletes a resident's information.
+func (r *Resident) Delete() {
+	r.Name = ""
+	r.Address = nil
+	r.Age = 0
+}
+
+// Count counts all residents that have provided the required information.
+func Count(residents []*Resident) int {
+	count := 0
+	for _, resident := range residents {
+		if resident.HasRequiredInfo() {
+			count++
+		}
+	}
+	return count
 }
